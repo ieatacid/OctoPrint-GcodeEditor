@@ -8,8 +8,6 @@ $(function() {
     function GcodeeditorViewModel(parameters) {
         var self = this;
 
-        console.log("GcodeeditorViewModel");
-
         self.gcodeViewModel = parameters[0];    
         self.loginState = parameters[1];
         self.printerState = parameters[2];
@@ -19,9 +17,6 @@ $(function() {
         self.title = ko.observable();
         self.gcodeTextArea = ko.observable();
         self.destinationFilename = ko.observable();
-
-        // printerStateViewModel
-        // https://github.com/vector76/OctoPrint/blob/a28920d514d1ce2abdd8bd73d77c0877d342479e/src/octoprint/static/js/app/viewmodels/printerstate.js
 
         self.saveGcode = function() {
             var fName = self._sanitize(self.destinationFilename());
@@ -45,118 +40,6 @@ $(function() {
                 return gettext("Save gcode");
             }
         });
-
-        // Modified from M33-Fio https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L3970
-        function showGcodeEditor(url, name, currentDialog, header, primaryButton, onloadCallback, delay) {
-
-            // Send request
-            $.ajax({
-                url: url,
-                type: "GET",
-                dataType: "text",
-                data: null,
-                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                traditional: true,
-                processData: true,
-                headers: {
-                    "Pragma": "no-cache",
-                    "Expires": "0",
-                    "Cache-Control": "no-cache, no-store, must-revalidate"
-            }
-
-            // Done
-            }).done(function(data) {
-                onloadCallback();
-                
-                self.title(header);
-
-                self.destinationFilename(name);
-
-                self.gcodeTextArea(data);
-
-                $("#gcode_edit_dialog").modal("show");                
-            });
-        }
-        
-        // Modified from M33-Fio https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L5026
-        // Add edit buttons to G-code
-        function addEditButtonsToGcode() {
-            console.log("addEditButtonsToGcode");
-
-            // Remove all edit buttons
-            $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").remove();
-            
-            // Go through all file entries
-            $("#files div.gcode_files div.entry .action-buttons").each(function() {
-                
-                // Check if file is G-code
-                if($(this).children().children("i.icon-print, i.fa.fa-print").length)
-                
-                    // Add edit button
-                    $(this).children("a.btn-mini").after("\
-                        <div class=\"btn btn-mini editGcode\" title=\"" + encodeQuotes(gettext("Edit")) + "\">\
-                            <i class=\"icon-pencil\"></i>\
-                        </div>\
-                    ");
-            });
-            
-            // Check if user isn't logged in
-            if(!self.loginState.loggedIn()) {
-                // Disable edit buttons
-                $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").addClass("disabled");
-            }
-
-            // Edit button click event
-            $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").click(function() {
-            
-                // Initialize variables
-                var button = $(this);
-                
-                // Blur self
-                button.blur();
-                
-                // Check if button is not disabled
-                if(!button.hasClass("disabled"))
-                
-                    // Check if not already loading file
-                    if(!loadingFile) {
-            
-                        // Set loading file
-                        loadingFile = true;
-            
-                        // Enable other edit buttons
-                        $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").removeClass("disabled");
-                    
-                        // Set icon to spinning animation
-                        button.addClass("disabled").children("i").removeClass("icon-pencil").addClass("icon-spinner icon-spin");
-                
-                        setTimeout(function() {
-                
-                            // Show G-code editor                                                                                                                                                             
-                            showGcodeEditor(button.parent().children("a.btn-mini").attr("href"),        // url,
-                                button.parent().parent().children("div").eq(0).text(),                  // name,
-                                "Edit G-code",                                                          // currentDialog,
-                                _.sprintf(gettext("Editing %(fileName)s"),                              // header,
-                                    {fileName: htmlEncode(typeof self.files.currentPath === "undefined" ||  
-                                    self.files.currentPath().length == 0 ? "" : 
-                                    "/" + self.files.currentPath() + "/") + 
-                                    button.parent().parent().children("div").eq(0).html()}),
-                                gettext("Save"),                                                        // primaryButton,
-                                function() {                                                            // onloadCallback
-                    
-                                    setTimeout(function() {
-                                    
-                                        // Clear loading file
-                                        loadingFile = false;
-                            
-                                        // Restore edit icon and enable button
-                                        button.removeClass("disabled").children("i").removeClass("icon-spinner icon-spin").addClass("icon-pencil");
-                                    }, 0);
-                                }, 0);
-                        }, 200);
-                    }
-            });
-        }
 
         self.onStartupComplete = function() {
             // Add edit buttons to G-code
@@ -198,6 +81,116 @@ $(function() {
             }
         }
 
+        // Modified from M33-Fio https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L3970
+        function showGcodeEditor(url, name, header, onloadCallback, delay) {
+
+            // Send request
+            $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "text",
+                data: null,
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                traditional: true,
+                processData: true,
+                headers: {
+                    "Pragma": "no-cache",
+                    "Expires": "0",
+                    "Cache-Control": "no-cache, no-store, must-revalidate"
+            }
+
+            // Done
+            }).done(function(data) {
+                onloadCallback();
+                
+                self.title(header);
+
+                self.destinationFilename(name);
+
+                self.gcodeTextArea(data);
+
+                $("#gcode_edit_dialog").modal("show");                
+            });
+        }
+        
+        // Modified from M33-Fio https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L5026
+        // Add edit buttons to G-code
+        function addEditButtonsToGcode() {
+
+            // Remove all edit buttons
+            $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").remove();
+            
+            // Go through all file entries
+            $("#files div.gcode_files div.entry .action-buttons").each(function() {
+                
+                // Check if file is G-code
+                if($(this).children().children("i.icon-print, i.fa.fa-print").length)
+                
+                    // Add edit button
+                    $(this).children("a.btn-mini").after("\
+                        <div class=\"btn btn-mini editGcode\" title=\"" + encodeQuotes(gettext("Edit")) + "\">\
+                            <i class=\"icon-pencil\"></i>\
+                        </div>\
+                    ");
+            });
+            
+            // Check if user isn't logged in
+            if(!self.loginState.loggedIn()) {
+                // Disable edit buttons
+                $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").addClass("disabled");
+            }
+
+            // Edit button click event
+            $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").click(function() {
+            
+                // Initialize variables
+                var button = $(this);
+                
+                // Blur self
+                button.blur();
+                
+                // Check if button is not disabled
+                if(!button.hasClass("disabled")) {
+                
+                    // Check if not already loading file
+                    if(!loadingFile) {
+            
+                        // Set loading file
+                        loadingFile = true;
+            
+                        // Enable other edit buttons
+                        $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").removeClass("disabled");
+                    
+                        // Set icon to spinning animation
+                        button.addClass("disabled").children("i").removeClass("icon-pencil").addClass("icon-spinner icon-spin");
+                
+                        setTimeout(function() {
+                
+                            // Show G-code editor                                                                                                                                                             
+                            showGcodeEditor(button.parent().children("a.btn-mini").attr("href"),        // url,
+                                button.parent().parent().children("div").eq(0).text(),                  // name,
+                                _.sprintf(gettext("Editing %(fileName)s"),                              // header,
+                                    {fileName: htmlEncode(typeof self.files.currentPath === "undefined" ||  
+                                    self.files.currentPath().length == 0 ? "" : 
+                                    "/" + self.files.currentPath() + "/") + 
+                                    button.parent().parent().children("div").eq(0).html()}),
+                                function() {                                                            // onloadCallback
+                    
+                                    setTimeout(function() {
+                                    
+                                        // Clear loading file
+                                        loadingFile = false;
+                            
+                                        // Restore edit icon and enable button
+                                        button.removeClass("disabled").children("i").removeClass("icon-spinner icon-spin").addClass("icon-pencil");
+                                    }, 0);
+                                }, 0);
+                        }, 200);
+                    }
+                }
+            });
+        }
+
         // Encode quotes https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L681
         function encodeQuotes(text) {
             
@@ -218,14 +211,10 @@ $(function() {
         };
     }
 
-    // view model class, parameters for constructor, container to bind to
     OCTOPRINT_VIEWMODELS.push([
         GcodeeditorViewModel,
 
         ["gcodeViewModel", "loginStateViewModel", "printerStateViewModel"],
         ["#gcode_edit_dialog"]
-        
-        // Finally, this is the list of selectors for all elements we want this view model to be bound to.
-        // ["#tab_plugin_GcodeEditor"]
     ]);
 });
