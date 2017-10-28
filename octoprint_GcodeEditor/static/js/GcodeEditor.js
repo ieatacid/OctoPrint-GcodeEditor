@@ -1,11 +1,11 @@
 /*
- * View model for OctoPrint-Gcodeeditor
+ * View model for OctoPrint-GcodeEditor
  *
  * Author: Jason F
  * License: AGPLv3
  */
 $(function() {
-    function GcodeeditorViewModel(parameters) {
+    function GcodeEditorViewModel(parameters) {
         var self = this;
 
         self.gcodeViewModel = parameters[0];    
@@ -212,7 +212,7 @@ $(function() {
     }
 
     OCTOPRINT_VIEWMODELS.push([
-        GcodeeditorViewModel,
+        GcodeEditorViewModel,
 
         ["gcodeViewModel", "loginStateViewModel", "printerStateViewModel"],
         ["#gcode_edit_dialog"]

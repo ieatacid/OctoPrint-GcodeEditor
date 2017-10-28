@@ -1,6 +1,6 @@
-# OctoPrint-Gcodeeditor
+# OctoPrint-GcodeEditor
 
-**TODO:** Describe what your plugin does.
+Adds edit buttons to the items in the file list which let you edit the gcode of any file that's not currently printing.
 
 ## Setup
 
@@ -9,9 +9,15 @@ or manually using this URL:
 
     https://github.com/ieatacid/OctoPrint-Gcodeeditor/archive/master.zip
 
-**TODO:** Describe how to install your plugin, if more needs to be done than just installing it via pip or through
-the plugin manager.
 
-## Screenshot
-![](img/edit_gcode.png?raw=true)
-![](img/edit_gcode2.png?raw=true)
+## Screenshots
+Adds edit button
+
+![Edit button](extras/assets/img/edit_gcode.png?raw=true)
+
+Gcode editor window
+
+![Edit window](extras/assets/img/edit_gcode2.png?raw=true)
+
+## Credits
+Thanks to [donovan6000](https://github.com/donovan6000)'s [M33-Fio](https://github.com/donovan6000/M33-Fio/) plugin for the button injection code!
