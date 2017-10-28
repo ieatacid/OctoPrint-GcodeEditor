@@ -13,4 +13,5 @@ or manually using this URL:
 the plugin manager.
 
 ## Screenshot
-![Settings](img/edit_gcode.png?raw=true)
+![](img/edit_gcode.png?raw=true)
+![](img/edit_gcode2.png?raw=true)
