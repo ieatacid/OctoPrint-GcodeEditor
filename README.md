@@ -12,6 +12,5 @@ or manually using this URL:
 **TODO:** Describe how to install your plugin, if more needs to be done than just installing it via pip or through
 the plugin manager.
 
-## Configuration
-
-**TODO:** Describe your plugin's configuration options (if any).
+## Screenshot
+![Settings](img/edit_gcode.png?raw=true)
