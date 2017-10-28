@@ -1,0 +1,36 @@
+<div id="gcode_edit_dialog" class="modal hide fade">
+    <div class="modal-header">
+        <a href="#" class="close" data-dismiss="modal" aria-hidden="true">&times;</a>
+        <h3 data-bind="text: title"></h3>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal">
+            <div class="control-group">
+                <textarea class="edit-text" rows="25" id="gcode" style="width: 97%" data-bind="value: gcodeTextArea, valueAllowUnset: false"></textarea>
+            </div>
+            <div class="control-group">
+                <label class="control-label">{{ _('Output Filename') }}</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="text" data-bind="value: destinationFilename">
+                        <span class="add-on"></span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">{{ _('Cancel') }}</a>
+        <a href="#" class="btn btn-primary" data-bind="click: 
+            function() { 
+                if ($root.canSaveGcode()) {
+                    $root.saveGcode() 
+                }
+            }, 
+            css: {disabled: !$root.canSaveGcode()},
+            attr: {
+                title: $root.saveGcodeButtonTooltip
+            }"
+        >{{ _('Save') }}</a>
+    </div>
+</div>
