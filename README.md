@@ -7,7 +7,7 @@ Adds edit buttons to the items in the file list which let you edit the gcode of 
 Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
 or manually using this URL:
 
-    https://github.com/ieatacid/OctoPrint-Gcodeeditor/archive/master.zip
+    https://github.com/ieatacid/OctoPrint-GcodeEditor/archive/master.zip
 
 
 ## Screenshots

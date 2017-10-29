@@ -1,16 +1,17 @@
 /*
  * View model for OctoPrint-GcodeEditor
  *
- * Author: Jason F
+ * Author: ieatacid
  * License: AGPLv3
  */
 $(function() {
     function GcodeEditorViewModel(parameters) {
         var self = this;
 
-        self.gcodeViewModel = parameters[0];    
+        self.filesViewModel = parameters[0];    
         self.loginState = parameters[1];
         self.printerState = parameters[2];
+        self.settingsViewModel = parameters[3];
 
         var loadingFile = false;
         self.files = null;
@@ -46,21 +47,12 @@ $(function() {
             addEditButtonsToGcode();
         }
 
-        self.onUserLoggedIn = function() {
-            // Add edit buttons to G-code
-            addEditButtonsToGcode();
-        }
-
-        self.onUserLoggedOut = function() {
-            // Add edit buttons to G-code
-            addEditButtonsToGcode();
-        }
-
         self.onAllBound = function(payload) {
 
             // Modified from M33-Fio https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L18516
             // Go through all view models
             for(var viewModel in payload) {
+
                 // Otherwise check if view model is files view model
                 if(payload[viewModel].constructor.name === "GcodeFilesViewModel" || payload[viewModel].constructor.name === "FilesViewModel") {
                     
@@ -214,7 +206,7 @@ $(function() {
     OCTOPRINT_VIEWMODELS.push([
         GcodeEditorViewModel,
 
-        ["gcodeViewModel", "loginStateViewModel", "printerStateViewModel"],
+        ["filesViewModel", "loginStateViewModel", "printerStateViewModel", "settingsViewModel"],
         ["#gcode_edit_dialog"]
     ]);
 });
