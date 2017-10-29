@@ -11,7 +11,6 @@ $(function() {
         self.filesViewModel = parameters[0];    
         self.loginState = parameters[1];
         self.printerState = parameters[2];
-        self.settingsViewModel = parameters[3];
 
         var loadingFile = false;
         self.files = null;
@@ -206,7 +205,7 @@ $(function() {
     OCTOPRINT_VIEWMODELS.push([
         GcodeEditorViewModel,
 
-        ["filesViewModel", "loginStateViewModel", "printerStateViewModel", "settingsViewModel"],
+        ["filesViewModel", "loginStateViewModel", "printerStateViewModel"],
         ["#gcode_edit_dialog"]
     ]);
 });

@@ -15,3 +15,4 @@ class GcodeEditorPlugin(octoprint.plugin.TemplatePlugin,
 
 __plugin_name__ = "GcodeEditor"
 __plugin_implementation__ = GcodeEditorPlugin()
+__plugin_version__ = "0.1.1"

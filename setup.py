@@ -21,7 +21,7 @@ plugin_version = "0.1.0"
 plugin_description = """Edit gcode from OctoPrint"""
 
 # The plugin's author. Can be overwritten within OctoPrint's internal data via __plugin_author__ in the plugin module
-plugin_author = "Jason F"
+plugin_author = "ieatacid"
 
 # The plugin's author's mail address.
 plugin_author_email = "ieatacid@gmail.com"
