@@ -27,7 +27,7 @@ class GcodeEditorPlugin(octoprint.plugin.TemplatePlugin,
 
     def get_update_information(self):
         return dict(
-            emergencyaction=dict(
+            GcodeEditor=dict(
                 displayName="GcodeEditor Plugin",
                 displayVersion=self._plugin_version,
 
