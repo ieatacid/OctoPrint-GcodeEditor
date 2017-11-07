@@ -19,5 +19,10 @@ Gcode editor window
 
 ![Edit window](extras/assets/img/edit_gcode2.png?raw=true)
 
+Gcode editor settings
+
+![Settings](extras/assets/img/edit_gcode3.png?raw=true)
+
+
 ## Credits
 Thanks to [donovan6000](https://github.com/donovan6000)'s [M33-Fio](https://github.com/donovan6000/M33-Fio/) plugin for the button injection code!
