@@ -83,11 +83,24 @@ $(function() {
             $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").remove();
         }
 
-        function disableEditButton(name) {
+        function disableEditButton(name, reason) {
             var select = _.sprintf(gettext("#files div.gcode_files div.entry .title:contains('%(filename)s')"), {filename: name});
 
             if($(select).parent().children().eq(4).children().eq(2).hasClass('editGcode')) {
                 $(select).parent().children().eq(4).children().eq(2).addClass('disabled');
+
+                if(reason.length > 0) {
+                    $(select).parent().children().eq(4).children().eq(2).prop('title', reason);
+                }
+            }
+        }
+
+        function enableEditButton(name) {
+            var select = _.sprintf(gettext("#files div.gcode_files div.entry .title:contains('%(filename)s')"), {filename: name});
+
+            if($(select).parent().children().eq(4).children().eq(2).hasClass('editGcode')) {
+                $(select).parent().children().eq(4).children().eq(2).removeClass('disabled');
+                $(select).parent().children().eq(4).children().eq(2).prop('title', 'Edit');
             }
         }
 
@@ -108,14 +121,7 @@ $(function() {
 
                     // Add edit button
                     if(!$(this).children().eq(1).hasClass("disabled")) {
-                        if(self.printerState.isPrinting() && self.printerState.filename() === $(this).children().parent().parent().children().eq(0).text()) {
-                            $(this).children("a.btn-mini").after("\
-                                <div class=\"btn btn-mini editGcode disabled\" title=\"" + encodeQuotes(gettext("File is currently printing")) + "\">\
-                                    <i class=\"icon-pencil\"></i>\
-                                </div>\
-                            ");
-                        }
-                        else if(size > self.maxGcodeSize() || (OctoPrint.coreui.browser.mobile && size > self.maxGcodeSizeMobile())) {
+                        if(size > self.maxGcodeSize() || (OctoPrint.coreui.browser.mobile && size > self.maxGcodeSizeMobile())) {
                             $(this).children("a.btn-mini").after("\
                                 <div class=\"btn btn-mini editGcode disabled\" title=\"" + encodeQuotes(gettext("File size too large")) + "\">\
                                     <i class=\"icon-pencil\"></i>\
@@ -125,6 +131,13 @@ $(function() {
                         else if(url.indexOf("/files/local/") === -1) {
                             $(this).children("a.btn-mini").after("\
                                 <div class=\"btn btn-mini editGcode disabled\" title=\"" + encodeQuotes(gettext("Not local file")) + "\">\
+                                    <i class=\"icon-pencil\"></i>\
+                                </div>\
+                            ");
+                        }
+                        else if(self.printerState.isPrinting() && self.printerState.filename() === $(this).children().parent().parent().children().eq(0).text()) {
+                            $(this).children("a.btn-mini").after("\
+                                <div class=\"btn btn-mini editGcode disabled\" title=\"" + encodeQuotes(gettext("File is currently printing")) + "\">\
                                     <i class=\"icon-pencil\"></i>\
                                 </div>\
                             ");
@@ -168,7 +181,7 @@ $(function() {
                     
                         // Set icon to spinning animation
                         button.addClass("disabled").children("i").removeClass("icon-pencil").addClass("icon-spinner icon-spin");
-                
+
                         setTimeout(function() {
 
                             // Show G-code editor                                                                                                                                                             
@@ -224,7 +237,7 @@ $(function() {
         self.onStartupComplete = function() {
             self.maxGcodeSize(bytesFromSize(self.settings.settings.plugins.GcodeEditor.maxGcodeSize()));
             self.maxGcodeSizeMobile(bytesFromSize(self.settings.settings.plugins.GcodeEditor.maxGcodeSizeMobile()));
-            
+
             addEditButtonsToGcode();
         }
 
@@ -273,7 +286,15 @@ $(function() {
         }
 
         self.onEventPrintStarted = function(payload) {
-            disableEditButton(payload.name);
+            disableEditButton(payload.name, "Can't edit while printing");
+        }
+
+        self.onEventPrintDone = function(payload) {
+            var fileName = payload.file.substr(payload.file.lastIndexOf("/") + 1, payload.file.length);
+
+            setTimeout(function() {
+                enableEditButton(fileName);
+            }, 100);
         }
     }
 

@@ -1,9 +1,10 @@
 <form class="form-horizontal">
+    <h4>Gcode Editor Settings</h4>
     <div class="control-group" title="{{ _('Maximum file size to open in Gcode Editor') }}">
-        <label class="control-label" for="settings-gcodeviewer">{{ _('Gcode Editor file size threshold') }}</label>
+        <label class="control-label" for="settings-gcodeviewer-size">{{ _('Gcode Editor file size threshold') }}</label>
         <div class="controls">
             <div class="input-append">
-                <input type="text" class="input-mini text-right" data-bind="value: settings.plugins.GcodeEditor.maxGcodeSize">
+                <input id="settings-gcodeviewer-size" type="text" class="input-mini text-right" data-bind="value: settings.plugins.GcodeEditor.maxGcodeSize">
             </div>
             <span class="help-inline">{{ _('on desktop')}}</span>
         </div>
