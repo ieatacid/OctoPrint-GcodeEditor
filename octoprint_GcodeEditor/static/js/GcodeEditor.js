@@ -8,7 +8,7 @@ $(function() {
     function GcodeEditorViewModel(parameters) {
         var self = this;
 
-        self.filesViewModel = parameters[0];    
+        self.filesViewModel = parameters[0];
         self.loginState = parameters[1];
         self.printerState = parameters[2];
         self.settings = parameters[3];
@@ -63,8 +63,7 @@ $(function() {
                     "Pragma": "no-cache",
                     "Expires": "0",
                     "Cache-Control": "no-cache, no-store, must-revalidate"
-            }
-
+                }
             // Done
             }).done(function(data) {
                 onloadCallback();
@@ -78,7 +77,7 @@ $(function() {
                 $("#gcode_edit_dialog").modal("show");                
             });
         }
-        
+
         function removeEditButtons() {
             $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").remove();
         }
@@ -110,10 +109,10 @@ $(function() {
 
             // Remove all edit buttons
             // $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").remove();
-            
+
             // Go through all file entries
             $("#files div.gcode_files div.entry .action-buttons").each(function() {
-                
+
                 // Check if file is G-code
                 if($(this).children().children("i.icon-print, i.fa.fa-print").length) {
                     var url = $(this).children().eq(1).attr("href");
@@ -152,7 +151,7 @@ $(function() {
                     }
                 }
             });
-            
+
             // Check if user isn't logged in
             if(!self.loginState.loggedIn()) {
                 // Disable edit buttons
@@ -163,42 +162,42 @@ $(function() {
             $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").click(function() {
 
                 var button = $(this);
-                
+
                 // Blur self
                 button.blur();
-                
+
                 // Check if button is not disabled
                 if(!button.hasClass("disabled")) {
-                
+
                     // Check if not already loading file
                     if(!loadingFile) {
-            
+
                         // Set loading file
                         loadingFile = true;
-            
+
                         // Enable other edit buttons
                         // $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").removeClass("disabled");
-                    
+
                         // Set icon to spinning animation
                         button.addClass("disabled").children("i").removeClass("icon-pencil").addClass("icon-spinner icon-spin");
 
                         setTimeout(function() {
 
-                            // Show G-code editor                                                                                                                                                             
+                            // Show G-code editor
                             showGcodeEditor(button.parent().children("a.btn-mini").attr("href"),        // url,
                                 button.parent().parent().children("div").eq(0).text(),                  // name,
                                 _.sprintf(gettext("Editing %(fileName)s"),                              // header,
-                                    {fileName: htmlEncode(typeof self.files.currentPath === "undefined" ||  
-                                    self.files.currentPath().length == 0 ? "" : 
-                                    "/" + self.files.currentPath() + "/") + 
+                                    {fileName: htmlEncode(typeof self.files.currentPath === "undefined" ||
+                                    self.files.currentPath().length == 0 ? "" :
+                                    "/" + self.files.currentPath() + "/") +
                                     button.parent().parent().children("div").eq(0).html()}),
                                 function() {                                                            // onloadCallback
-                    
+
                                     setTimeout(function() {
-                                        
+
                                         // Clear loading file
                                         loadingFile = false;
-                            
+
                                         // Restore edit icon and enable button
                                         button.removeClass("disabled").children("i").removeClass("icon-spinner icon-spin").addClass("icon-pencil");
                                     }, 0);
@@ -217,7 +216,7 @@ $(function() {
 
         // Encode quotes https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L681
         function encodeQuotes(text) {
-            
+
             // Return text with encoded quotes
             return String(text).replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/`/g, "&#96;");
         }
@@ -254,7 +253,7 @@ $(function() {
             // Modified from M33-Fio https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L18516
             // Go through all view models
             for(var viewModel in payload) {
-                
+
                 // Otherwise check if view model is files view model
                 if(payload[viewModel].constructor.name === "FilesViewModel" || payload[viewModel].constructor.name === "GcodeFilesViewModel") {
 
@@ -277,6 +276,7 @@ $(function() {
 
         self.onUserLoggedIn = function() {
             if(!firstRun) {
+                removeEditButtons();
                 addEditButtonsToGcode();
             }
         }
