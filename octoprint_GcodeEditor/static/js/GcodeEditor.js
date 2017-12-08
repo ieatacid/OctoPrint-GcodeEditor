@@ -13,8 +13,9 @@ $(function() {
         self.printerState = parameters[2];
         self.settings = parameters[3];
 
-        var loadingFile = false;
-        var firstRun = true;
+        var _loadingFile = false;
+        var _firstRun = true;
+        var _selectedFilePath;
         self.files = null;
         self.title = ko.observable();
         self.gcodeTextArea = ko.observable();
@@ -26,11 +27,9 @@ $(function() {
             var fName = self._sanitize(self.destinationFilename());
             var gtext = self.gcodeTextArea();
 
-            var file = new File([gtext], fName, { type: "text/plain", });
+            var file = new File([gtext], _selectedFilePath + fName, { type: "text/plain" });
 
             OctoPrint.files.upload("local", file);
-
-            addEditButtonsToGcode();
 
             $("#gcode_edit_dialog").modal("hide");
         }
@@ -49,6 +48,13 @@ $(function() {
 
         // Modified from M33-Fio https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L3970
         function showGcodeEditor(url, name, header, onloadCallback, delay) {
+            var str = getGcodePathAndName(getRootFilePath(), url);
+
+            if(str.split("/").length > 2) {
+                _selectedFilePath = str.substring(1, str.lastIndexOf("/")) + "/";
+            } else {
+                _selectedFilePath = "";
+            }
 
             // Send request
             $.ajax({
@@ -170,10 +176,10 @@ $(function() {
                 if(!button.hasClass("disabled")) {
 
                     // Check if not already loading file
-                    if(!loadingFile) {
+                    if(!_loadingFile) {
 
                         // Set loading file
-                        loadingFile = true;
+                        _loadingFile = true;
 
                         // Enable other edit buttons
                         // $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").removeClass("disabled");
@@ -196,7 +202,7 @@ $(function() {
                                     setTimeout(function() {
 
                                         // Clear loading file
-                                        loadingFile = false;
+                                        _loadingFile = false;
 
                                         // Restore edit icon and enable button
                                         button.removeClass("disabled").children("i").removeClass("icon-spinner icon-spin").addClass("icon-pencil");
@@ -207,11 +213,69 @@ $(function() {
                 }
             });
 
-            firstRun = false;
+            _firstRun = false;
         }
 
         function _bytesFromSize(size_str) {
             return bytesFromSize(size_str.split("Size: ")[1]);
+        }
+
+        // Get root file path
+		function getRootFilePath() {
+            
+            // Initialize entry
+            var entry = self.files.listHelper.allItems[0];
+            
+            // Check if OctoPrint version doesn't use upload folders
+            if(entry && !entry.hasOwnProperty("parent")) {
+            
+                // Construct root file path
+                var root = {
+                    children: {}
+                };
+                
+                // Go throguh all entries
+                for(var index in self.files.listHelper.allItems)
+                
+                    // Add entry to root's children
+                    root.children[index] = self.files.listHelper.allItems[index];
+                
+                // Return root
+                return root;
+            }
+            
+            // Loop while entry has a parent
+            while(entry && entry.hasOwnProperty("parent") && typeof entry["parent"] !== "undefined")
+            
+                // Set entry to its parent
+                entry = entry["parent"];
+            
+            // Return entry
+            return entry;
+        }
+
+        // Get G-code path and name
+		function getGcodePathAndName(entry, gcodeUrl) {
+			
+			// Check if entry is a folder
+			if(entry && entry.hasOwnProperty("children"))
+		
+				// Go through each entry in the folder
+				for(var child in entry.children) {
+			
+					// Check if current child is the specified G-code file
+					var value = getGcodePathAndName(entry.children[child], gcodeUrl);
+					if(typeof value !== "undefined")
+					
+						// Return upload date
+						return value;
+				}
+		
+			// Otherwise check if entry is the specified G-code file
+			else if(entry && entry.hasOwnProperty("name") && entry.refs && entry.refs.hasOwnProperty("download") && entry["refs"]["download"] === gcodeUrl)
+			
+				// Return path and name
+				return (typeof self.files.currentPath !== "undefined" ? "/" : "") + (entry.hasOwnProperty("path") ? entry["path"] : entry["name"]);
         }
 
         // Encode quotes https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L681
@@ -275,7 +339,7 @@ $(function() {
         }
 
         self.onUserLoggedIn = function() {
-            if(!firstRun) {
+            if(!_firstRun) {
                 removeEditButtons();
                 addEditButtonsToGcode();
             }
