@@ -12,6 +12,7 @@ class GcodeEditorPlugin(octoprint.plugin.TemplatePlugin,
     def get_assets(self):
         return dict(
             js=["js/GcodeEditor.js"],
+            css=["css/GcodeEditor.css"]
         )
 
     def get_settings_defaults(self):

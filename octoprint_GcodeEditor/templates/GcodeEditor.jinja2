@@ -13,7 +13,6 @@
                 <div class="controls">
                     <div class="input-append">
                         <input type="text" data-bind="value: $root.destinationFilename">
-                        <span class="add-on"></span>
                     </div>
                 </div>
             </div>
@@ -33,4 +32,8 @@
             }"
         >{{ _('Save') }}</a>
     </div>
+</div>
+
+<div class="hide" id="loading_modal">
+    <div class="loading">Loading<span>.</span><span>.</span><span>.</span></div>
 </div>
