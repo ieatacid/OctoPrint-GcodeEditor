@@ -27,9 +27,9 @@ $(function() {
             var fName = self._sanitize(self.destinationFilename());
             var gtext = self.gcodeTextArea();
 
-            var file = new File([gtext], _selectedFilePath + fName, { type: "text/plain" });
+            var file = new Blob([gtext], { type: "text/plain" });
 
-            OctoPrint.files.upload("local", file);
+            OctoPrint.files.upload("local", file, { filename: _selectedFilePath + fName });
 
             $("#gcode_edit_dialog").modal("hide");
         });
