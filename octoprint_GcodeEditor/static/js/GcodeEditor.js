@@ -23,16 +23,16 @@ $(function() {
         self.maxGcodeSize = ko.observable();
         self.maxGcodeSizeMobile = ko.observable();
 
-        self.saveGcode = function() {
+        self.saveGcode = ko.pureComputed(function() {
             var fName = self._sanitize(self.destinationFilename());
             var gtext = self.gcodeTextArea();
 
-            var file = new File([gtext], _selectedFilePath + fName, { type: "text/plain" });
+            var file = new Blob([gtext], { type: "text/plain" });
 
-            OctoPrint.files.upload("local", file);
+            OctoPrint.files.upload("local", file, { filename: _selectedFilePath + fName });
 
             $("#gcode_edit_dialog").modal("hide");
-        }
+        });
 
         self.canSaveGcode = ko.pureComputed(function() {
             return !(self.printerState.isPrinting() && self.printerState.filename() === self.destinationFilename());
@@ -69,6 +69,9 @@ $(function() {
                     "Pragma": "no-cache",
                     "Expires": "0",
                     "Cache-Control": "no-cache, no-store, must-revalidate"
+                },
+                beforeSend: function() {
+                    $('#loading_modal').modal("show");
                 }
             // Done
             }).done(function(data) {
@@ -83,6 +86,10 @@ $(function() {
                 $("#gcode_edit_dialog").modal("show");                
             });
         }
+
+        $('body').on('shown', '#gcode_edit_dialog', function(e){
+            $('#loading_modal').modal("hide");
+        });
 
         function removeEditButtons() {
             $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").remove();
