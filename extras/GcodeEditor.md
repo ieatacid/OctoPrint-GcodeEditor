@@ -3,7 +3,7 @@ layout: plugin
 
 id: GcodeEditor
 title: GcodeEditor
-description: Edit gcode that's been uploaded to OctoPrint
+description: Edit G-code that's been uploaded to OctoPrint
 author: ieatacid
 license: AGPLv3
 
@@ -21,10 +21,8 @@ tags:
 screenshots:
 - url: /assets/img/plugins/GcodeEditor/edit_gcode.png
   alt: Edit button
-  caption: Adds edit button in file list
 - url: /assets/img/plugins/GcodeEditor/edit_gcode2.png
   alt: Edit window
-  caption: Gcode editor window
 
 featuredimage: /assets/img/plugins/GcodeEditor/edit_gcode.png
 
@@ -41,4 +39,4 @@ compatibility:
 
 ---
 
-Adds edit buttons to the items in the file list which let you edit the gcode of any file that's not currently printing.
+Adds edit buttons to the items in the file list which let you edit the G-code of any file that's not currently printing.

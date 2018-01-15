@@ -1,6 +1,6 @@
 # OctoPrint-GcodeEditor
 
-Adds edit buttons to the items in the file list which let you edit the gcode of any file that's not currently printing.
+Adds edit buttons to the items in the file list which let you edit the G-code of any file that's not currently printing.
 
 ## Setup
 

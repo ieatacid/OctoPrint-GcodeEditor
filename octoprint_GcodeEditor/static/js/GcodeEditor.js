@@ -221,61 +221,61 @@ $(function() {
         }
 
         // Get root file path
-		function getRootFilePath() {
-            
+        function getRootFilePath() {
+
             // Initialize entry
             var entry = self.files.listHelper.allItems[0];
-            
+
             // Check if OctoPrint version doesn't use upload folders
             if(entry && !entry.hasOwnProperty("parent")) {
-            
+
                 // Construct root file path
                 var root = {
                     children: {}
                 };
-                
+
                 // Go throguh all entries
                 for(var index in self.files.listHelper.allItems)
-                
+
                     // Add entry to root's children
                     root.children[index] = self.files.listHelper.allItems[index];
-                
+
                 // Return root
                 return root;
             }
-            
+
             // Loop while entry has a parent
             while(entry && entry.hasOwnProperty("parent") && typeof entry["parent"] !== "undefined")
-            
+
                 // Set entry to its parent
                 entry = entry["parent"];
-            
+
             // Return entry
             return entry;
         }
 
         // Get G-code path and name
-		function getGcodePathAndName(entry, gcodeUrl) {
-			
-			// Check if entry is a folder
-			if(entry && entry.hasOwnProperty("children"))
-		
-				// Go through each entry in the folder
-				for(var child in entry.children) {
-			
-					// Check if current child is the specified G-code file
-					var value = getGcodePathAndName(entry.children[child], gcodeUrl);
-					if(typeof value !== "undefined")
-					
-						// Return upload date
-						return value;
-				}
-		
-			// Otherwise check if entry is the specified G-code file
-			else if(entry && entry.hasOwnProperty("name") && entry.refs && entry.refs.hasOwnProperty("download") && entry["refs"]["download"] === gcodeUrl)
-			
-				// Return path and name
-				return (typeof self.files.currentPath !== "undefined" ? "/" : "") + (entry.hasOwnProperty("path") ? entry["path"] : entry["name"]);
+        function getGcodePathAndName(entry, gcodeUrl) {
+
+            // Check if entry is a folder
+            if (entry && entry.hasOwnProperty("children"))
+
+                // Go through each entry in the folder
+                for(var child in entry.children) {
+
+                    // Check if current child is the specified G-code file
+                    var value = getGcodePathAndName(entry.children[child], gcodeUrl);
+                    if(typeof value !== "undefined")
+
+                        // Return upload date
+                        return value;
+                }
+
+            // Otherwise check if entry is the specified G-code file
+            else if(entry && entry.hasOwnProperty("name") && entry.refs && entry.refs.hasOwnProperty("download") && entry["refs"]["download"] === gcodeUrl)
+
+                // Return path and name
+                return (typeof self.files.currentPath !== "undefined" ? "/" : "") + (entry.hasOwnProperty("path") ? entry["path"] : entry["name"]);
         }
 
         // Encode quotes https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L681
