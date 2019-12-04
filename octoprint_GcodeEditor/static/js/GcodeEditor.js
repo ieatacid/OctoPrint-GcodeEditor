@@ -203,7 +203,7 @@ $(function() {
                                     {fileName: htmlEncode(typeof self.files.currentPath === "undefined" ||
                                     self.files.currentPath().length == 0 ? "" :
                                     "/" + self.files.currentPath() + "/") +
-                                    button.parent().parent().children("div").eq(0).html()}),
+                                    button.parent().parent().children("div.title").eq(0).html()}),
                                 function() {                                                            // onloadCallback
 
                                     setTimeout(function() {
