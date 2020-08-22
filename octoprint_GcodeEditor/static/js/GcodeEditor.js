@@ -50,7 +50,7 @@ $(function() {
         function showGcodeEditor(url, name, header, onloadCallback, delay) {
             var str = getGcodePathAndName(getRootFilePath(), url);
 
-            if(str.split("/").length > 2) {
+            if (str.split("/").length > 2) {
                 _selectedFilePath = str.substring(1, str.lastIndexOf("/")) + "/";
             } else {
                 _selectedFilePath = "";
@@ -73,7 +73,7 @@ $(function() {
                 beforeSend: function() {
                     $('#loading_modal').modal("show");
                 }
-            // Done
+                // Done
             }).done(function(data) {
                 onloadCallback();
 
@@ -83,11 +83,11 @@ $(function() {
 
                 self.gcodeTextArea(data);
 
-                $("#gcode_edit_dialog").modal("show");                
+                $("#gcode_edit_dialog").modal("show");
             });
         }
 
-        $('body').on('shown', '#gcode_edit_dialog', function(e){
+        $('body').on('shown', '#gcode_edit_dialog', function(e) {
             $('#loading_modal').modal("hide");
         });
 
@@ -96,21 +96,21 @@ $(function() {
         }
 
         function disableEditButton(name, reason) {
-            var select = _.sprintf(gettext("#files div.gcode_files div.entry .title:contains('%(filename)s')"), {filename: name});
+            var select = _.sprintf(gettext("#files div.gcode_files div.entry .title:contains('%(filename)s')"), { filename: name });
 
-            if($(select).parent().children().eq(4).children().eq(2).hasClass('editGcode')) {
+            if ($(select).parent().children().eq(4).children().eq(2).hasClass('editGcode')) {
                 $(select).parent().children().eq(4).children().eq(2).addClass('disabled');
 
-                if(reason.length > 0) {
+                if (reason.length > 0) {
                     $(select).parent().children().eq(4).children().eq(2).prop('title', reason);
                 }
             }
         }
 
         function enableEditButton(name) {
-            var select = _.sprintf(gettext("#files div.gcode_files div.entry .title:contains('%(filename)s')"), {filename: name});
+            var select = _.sprintf(gettext("#files div.gcode_files div.entry .title:contains('%(filename)s')"), { filename: name });
 
-            if($(select).parent().children().eq(4).children().eq(2).hasClass('editGcode')) {
+            if ($(select).parent().children().eq(4).children().eq(2).hasClass('editGcode')) {
                 $(select).parent().children().eq(4).children().eq(2).removeClass('disabled');
                 $(select).parent().children().eq(4).children().eq(2).prop('title', 'Edit');
             }
@@ -119,35 +119,31 @@ $(function() {
         // Modified from M33-Fio https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L5026
         // Add edit buttons to G-code
         function addEditButtonsToGcode() {
-
-            // Remove all edit buttons
-            // $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").remove();
-
             // Go through all file entries
             $("#files div.gcode_files div.entry .action-buttons").each(function() {
 
                 // Check if file is G-code
-                if($(this).children().children("i.icon-print, i.fa.fa-print").length) {
-                    var url = $(this).children().eq(1).attr("href");
+                if ($(this).children().children("i.icon-print, i.fa.fa-print").length) {
+                    var url = $(this).children().eq(0).attr("href");
                     var size = _bytesFromSize($(this).parent().children().eq(2).text());
 
                     // Add edit button
-                    if(!$(this).children().eq(1).hasClass("disabled")) {
-                        if(size > self.maxGcodeSize() || (OctoPrint.coreui.browser.mobile && size > self.maxGcodeSizeMobile())) {
+                    if (!$(this).children().eq(0).hasClass("disabled")) {
+                        if (size > self.maxGcodeSize() || (OctoPrint.coreui.browser.mobile && size > self.maxGcodeSizeMobile())) {
                             $(this).children("a.btn-mini").after("\
                                 <div class=\"btn btn-mini editGcode disabled\" title=\"" + encodeQuotes(gettext("File size too large")) + "\">\
                                     <i class=\"icon-pencil\"></i>\
                                 </div>\
                             ");
                         }
-                        else if(url.indexOf("/files/local/") === -1) {
+                        else if (url.indexOf("/files/local/") === -1) {
                             $(this).children("a.btn-mini").after("\
                                 <div class=\"btn btn-mini editGcode disabled\" title=\"" + encodeQuotes(gettext("Not local file")) + "\">\
                                     <i class=\"icon-pencil\"></i>\
                                 </div>\
                             ");
                         }
-                        else if(self.printerState.isPrinting() && self.printerState.filename() === $(this).children().parent().parent().children().eq(0).text()) {
+                        else if (self.printerState.isPrinting() && self.printerState.filename() === $(this).children().parent().parent().children().eq(0).text()) {
                             $(this).children("a.btn-mini").after("\
                                 <div class=\"btn btn-mini editGcode disabled\" title=\"" + encodeQuotes(gettext("File is currently printing")) + "\">\
                                     <i class=\"icon-pencil\"></i>\
@@ -166,7 +162,7 @@ $(function() {
             });
 
             // Check if user isn't logged in
-            if(!self.loginState.loggedIn()) {
+            if (!self.loginState.loggedIn()) {
                 // Disable edit buttons
                 $("#files div.gcode_files div.entry .action-buttons div.btn-mini.editGcode").addClass("disabled");
             }
@@ -180,10 +176,10 @@ $(function() {
                 button.blur();
 
                 // Check if button is not disabled
-                if(!button.hasClass("disabled")) {
+                if (!button.hasClass("disabled")) {
 
                     // Check if not already loading file
-                    if(!_loadingFile) {
+                    if (!_loadingFile) {
 
                         // Set loading file
                         _loadingFile = true;
@@ -196,25 +192,24 @@ $(function() {
 
                         setTimeout(function() {
 
+                            var furl = button.parent().children("a.btn-mini").attr("href");
+                            var fname = button.parent().parent().children("div.title").eq(0).html();
+                            var fheader = _.sprintf(gettext("Editing %(fileName)s"),
+                                {
+                                    fileName: htmlEncode(typeof self.files.currentPath === "undefined" ||
+                                        self.files.currentPath().length == 0 ? "" : "/" + self.files.currentPath() + "/") + fname
+                                })
+
                             // Show G-code editor
-                            showGcodeEditor(button.parent().children("a.btn-mini").attr("href"),        // url,
-                                button.parent().parent().children("div").eq(0).text(),                  // name,
-                                _.sprintf(gettext("Editing %(fileName)s"),                              // header,
-                                    {fileName: htmlEncode(typeof self.files.currentPath === "undefined" ||
-                                    self.files.currentPath().length == 0 ? "" :
-                                    "/" + self.files.currentPath() + "/") +
-                                    button.parent().parent().children("div.title").eq(0).html()}),
-                                function() {                                                            // onloadCallback
+                            showGcodeEditor(furl, fname, fheader, function() {
+                                setTimeout(function() {
+                                    // Clear loading file
+                                    _loadingFile = false;
 
-                                    setTimeout(function() {
-
-                                        // Clear loading file
-                                        _loadingFile = false;
-
-                                        // Restore edit icon and enable button
-                                        button.removeClass("disabled").children("i").removeClass("icon-spinner icon-spin").addClass("icon-pencil");
-                                    }, 0);
+                                    // Restore edit icon and enable button
+                                    button.removeClass("disabled").children("i").removeClass("icon-spinner icon-spin").addClass("icon-pencil");
                                 }, 0);
+                            }, 0);
                         }, 200);
                     }
                 }
@@ -234,7 +229,7 @@ $(function() {
             var entry = self.files.listHelper.allItems[0];
 
             // Check if OctoPrint version doesn't use upload folders
-            if(entry && !entry.hasOwnProperty("parent")) {
+            if (entry && !entry.hasOwnProperty("parent")) {
 
                 // Construct root file path
                 var root = {
@@ -242,7 +237,7 @@ $(function() {
                 };
 
                 // Go throguh all entries
-                for(var index in self.files.listHelper.allItems)
+                for (var index in self.files.listHelper.allItems)
 
                     // Add entry to root's children
                     root.children[index] = self.files.listHelper.allItems[index];
@@ -252,7 +247,7 @@ $(function() {
             }
 
             // Loop while entry has a parent
-            while(entry && entry.hasOwnProperty("parent") && typeof entry["parent"] !== "undefined")
+            while (entry && entry.hasOwnProperty("parent") && typeof entry["parent"] !== "undefined")
 
                 // Set entry to its parent
                 entry = entry["parent"];
@@ -268,18 +263,18 @@ $(function() {
             if (entry && entry.hasOwnProperty("children"))
 
                 // Go through each entry in the folder
-                for(var child in entry.children) {
+                for (var child in entry.children) {
 
                     // Check if current child is the specified G-code file
                     var value = getGcodePathAndName(entry.children[child], gcodeUrl);
-                    if(typeof value !== "undefined")
+                    if (typeof value !== "undefined")
 
                         // Return upload date
                         return value;
                 }
 
             // Otherwise check if entry is the specified G-code file
-            else if(entry && entry.hasOwnProperty("name") && entry.refs && entry.refs.hasOwnProperty("download") && entry["refs"]["download"] === gcodeUrl)
+            else if (entry && entry.hasOwnProperty("name") && entry.refs && entry.refs.hasOwnProperty("download") && entry["refs"]["download"] === gcodeUrl)
 
                 // Return path and name
                 return (typeof self.files.currentPath !== "undefined" ? "/" : "") + (entry.hasOwnProperty("path") ? entry["path"] : entry["name"]);
@@ -323,16 +318,17 @@ $(function() {
 
             // Modified from M33-Fio https://github.com/donovan6000/M33-Fio/blob/master/octoprint_m33fio/static/js/m33fio.js#L18516
             // Go through all view models
-            for(var viewModel in payload) {
+            for (var viewModel in payload) {
 
                 // Otherwise check if view model is files view model
-                if(payload[viewModel].constructor.name === "FilesViewModel" || payload[viewModel].constructor.name === "GcodeFilesViewModel") {
+                if (payload[viewModel].constructor.name === "FilesViewModel" || payload[viewModel].constructor.name === "GcodeFilesViewModel") {
 
                     // Set files
                     self.files = payload[viewModel];
 
                     // Replace list helper update items
                     var originalUpdateItems = self.files.listHelper._updateItems;
+
                     self.files.listHelper._updateItems = function() {
 
                         // Update items
@@ -346,7 +342,7 @@ $(function() {
         }
 
         self.onUserLoggedIn = function() {
-            if(!_firstRun) {
+            if (!_firstRun) {
                 removeEditButtons();
                 addEditButtonsToGcode();
             }
@@ -369,10 +365,9 @@ $(function() {
         }
     }
 
-    OCTOPRINT_VIEWMODELS.push([
-        GcodeEditorViewModel,
-
-        ["filesViewModel", "loginStateViewModel", "printerStateViewModel", "settingsViewModel"],
-        ["#gcode_edit_dialog"]
-    ]);
+    OCTOPRINT_VIEWMODELS.push({
+        construct: GcodeEditorViewModel,
+        dependencies: ["filesViewModel", "loginStateViewModel", "printerStateViewModel", "settingsViewModel"],
+        elements: ["#gcode_edit_dialog"]
+    });
 });
