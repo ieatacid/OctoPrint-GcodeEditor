@@ -302,7 +302,7 @@ $(function() {
 
         // https://github.com/foosel/OctoPrint/blob/master/src/octoprint/static/js/app/viewmodels/slicing.js#L294
         self._sanitize = function(name) {
-            return name.replace(/[^a-zA-Z0-9\-_\.\(\) ]/g, "").replace(/ /g, "_");
+            return name.replace(/[^a-zA-Z0-9\-_\.\(\) ]/g, "");
         };
 
         self.onStartupComplete = function() {
