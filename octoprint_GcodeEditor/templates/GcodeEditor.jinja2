@@ -15,6 +15,15 @@
                         <input type="text" data-bind="value: $root.destinationFilename">
                     </div>
                 </div>
+                <label class="control-label">{{ _('Cut Gcode height mm') }}</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="number" data-bind="value: $root.gcodeHeight">
+                    </div>
+                    <a href="#" class="btn btn-primary" data-bind="click:
+                    function() { $root.cutGcode() }"
+                >{{ _('Cut') }}</a>
+                </div>
             </div>
         </form>
     </div>
@@ -27,9 +36,7 @@
                 }
             },
             css: {disabled: !$root.canSaveGcode()},
-            attr: {
-                title: $root.saveGcodeButtonTooltip
-            }"
+            attr: {title: $root.saveGcodeButtonTooltip}"
         >{{ _('Save') }}</a>
     </div>
 </div>

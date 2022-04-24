@@ -16,7 +16,8 @@ class GcodeEditorPlugin(octoprint.plugin.TemplatePlugin,
     def get_settings_defaults(self):
         return dict(
             maxGcodeSize="10MB",
-            maxGcodeSizeMobile="5MB"
+            maxGcodeSizeMobile="5MB",
+            layerHeight=0.2
         )
 
     def get_template_configs(self):

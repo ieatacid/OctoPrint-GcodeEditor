@@ -23,6 +23,56 @@ $(function() {
         self.destinationFilename = ko.observable();
         self.maxGcodeSize = ko.observable();
         self.maxGcodeSizeMobile = ko.observable();
+        self.layerHeight = ko.observable();
+        self.gcodeHeight = ko.observable();
+        
+        self.cutGcode = ko.pureComputed(function() {
+            var gtext = self.gcodeTextArea();
+            var process = false;
+            var lineNum = 0;
+            var layerHeightP = self.settings.settings.plugins.GcodeEditor.layerHeight();
+            var layerNum = Math.floor(self.gcodeHeight()/layerHeightP);
+            var data = gtext.split('\n');
+            const gtextcut = [];
+
+            if (layerNum === 0) return;
+
+            for(let line of data) {
+                if (line[3] === 'Z') {
+                    let z = line.indexOf('Z');
+                    let f = line.indexOf('F');
+                    let height = Number(line.slice(z+1,f-1));
+                    let speed = Number(line.slice(f+1,-1));
+                    line = "G1 Z" + (height-layerNum*layerHeightP).toFixed(3) + " F" + speed.toFixed(3);
+                    lineNum = lineNum + 1;
+                }
+                if (lineNum === layerNum+2 && process === false) {
+                    gtextcut.push("G28 X Y ; home X Y");
+                    gtextcut.push("M420 S1 ; get ABL");
+                    gtextcut.push("G21 ; set units to millimeters");
+                    gtextcut.push("G90 ; use absolute coordinates");
+                    gtextcut.push("M83 ; use relative distances for extrusion");
+                    process = true;
+                }
+                if (process === true) {
+                    gtextcut.push(line);
+                } else if (line[0] !== 'G' && !(line.includes('M500'))) {
+                    gtextcut.push(line);
+                }
+            }
+            self.gcodeTextArea(gtextcut.join('\n'));
+        });
+
+        self.saveGcode = ko.pureComputed(function() {
+            var fName = self._sanitize(self.destinationFilename());
+            var gtext = self.gcodeTextArea();
+
+            var file = new Blob([gtext], { type: "text/plain" });
+
+            OctoPrint.files.upload("local", file, { filename: _selectedFilePath + fName });
+
+            $('#gcode_edit_dialog').modal('hide');
+        });
 
         self.saveGcode = ko.pureComputed(function() {
             var fName = self._sanitize(self.destinationFilename());
@@ -86,7 +136,9 @@ $(function() {
 
                 self.title(header);
 
-                self.destinationFilename(name);
+                self.destinationFilename(name.split('.')[0] + '_modified.gcode');
+
+                self.gcodeHeight(0.0);
 
                 self.gcodeTextArea(data);
 
