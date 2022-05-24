@@ -10,7 +10,7 @@
         </div>
         <div class="controls">
             <div class="input-append">
-                 <input type="text" class="input-mini text-right" data-bind="value: settings.plugins.GcodeEditor..maxGcodeSizeMobile">
+                 <input type="text" class="input-mini text-right" data-bind="value: settings.plugins.GcodeEditor.maxGcodeSizeMobile">
             </div>
             <span class="help-inline">{{ _('on mobile')}}</span>
         </div>
@@ -24,7 +24,7 @@
         <label class="control-label" for="settings-gcodeviewer-size">{{ _('Gcode saver layer height') }}</label>
         <div class="controls">
             <div class="input-append">
-                <input id="settings-gcodeviewer-size" type="number" class="input-mini text-right" data-bind="value: settings.plugins.GcodeEditor.maxGcodeSizeMobile">
+                <input id="settings-gcodeviewer-size" type="number" class="input-mini text-right" data-bind="value: settings.plugins.GcodeEditor.layerHeight">
             </div>
             <span class="help-inline">
                 {% trans %}Layer height in your slicer, default 0.2mm{% endtrans %}
