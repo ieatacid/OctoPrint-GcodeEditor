@@ -48,7 +48,6 @@ $(function() {
                 }
                 if (lineNum === layerNum+2 && process === false) {
                     gtextcut.push("G28 X Y ; home X Y");
-                    gtextcut.push("M420 S1 ; get ABL");
                     gtextcut.push("G21 ; set units to millimeters");
                     gtextcut.push("G90 ; use absolute coordinates");
                     gtextcut.push("M83 ; use relative distances for extrusion");
