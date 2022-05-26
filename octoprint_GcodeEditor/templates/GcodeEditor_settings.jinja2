@@ -20,4 +20,15 @@
             </span>
         </div>
     </div>
+    <div class="control-group" title="{{ _('Gcode saver settings') }}">
+        <label class="control-label" for="settings-gcodeviewer-size">{{ _('Gcode saver layer height') }}</label>
+        <div class="controls">
+            <div class="input-append">
+                <input id="settings-gcodeviewer-size" type="number" class="input-mini text-right" data-bind="value: settings.plugins.GcodeEditor.layerHeight">
+            </div>
+            <span class="help-inline">
+                {% trans %}Layer height in your slicer, default 0.2mm{% endtrans %}
+            </span>
+        </div>
+    </div>
 </form>
