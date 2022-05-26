@@ -29,24 +29,23 @@ $(function() {
         self.cutGcode = ko.pureComputed(function() {
             var gtext = self.gcodeTextArea();
             var process = false;
-            var lineNum = 0;
             var layerHeightP = self.settings.settings.plugins.GcodeEditor.layerHeight();
-            var layerNum = Math.floor(self.gcodeHeight()/layerHeightP);
+            var gcodeHeightP = self.gcodeHeight();
             var data = gtext.split('\n');
+            var height = 0;
             const gtextcut = [];
 
-            if (layerNum === 0) return;
+            if (gcodeHeightP <= layerHeightP) return;
 
             for(let line of data) {
                 if (line[3] === 'Z') {
                     let z = line.indexOf('Z');
                     let f = line.indexOf('F');
-                    let height = Number(line.slice(z+1,f-1));
                     let speed = Number(line.slice(f+1,-1));
-                    line = "G1 Z" + (height-layerNum*layerHeightP).toFixed(3) + " F" + speed.toFixed(3);
-                    lineNum = lineNum + 1;
+                    height = Number(line.slice(z+1,f-1));
+                    line = "G1 Z" + (height-gcodeHeightP).toFixed(3) + " F" + speed.toFixed(3);
                 }
-                if (lineNum === layerNum+2 && process === false) {
+                if (height > gcodeHeightP  && process === false) {
                     gtextcut.push("G28 X Y ; home X Y");
                     gtextcut.push("G21 ; set units to millimeters");
                     gtextcut.push("G90 ; use absolute coordinates");
