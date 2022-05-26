@@ -45,7 +45,8 @@ $(function() {
                     height = Number(line.slice(z+1,f-1));
                     line = "G1 Z" + (height-gcodeHeightP).toFixed(3) + " F" + speed.toFixed(3);
                 }
-                if (height > gcodeHeightP  && process === false) {
+                // In case of custom Z nozzle movements at the beginning, let's assume there is a comment at the end of the line
+                if (height > gcodeHeightP  && process === falsee && !(line.includes(';'))) {
                     gtextcut.push("G28 X Y ; home X Y");
                     gtextcut.push("G21 ; set units to millimeters");
                     gtextcut.push("G90 ; use absolute coordinates");
