@@ -68,7 +68,7 @@ $(function() {
 
             var file = new Blob([gtext], { type: "text/plain" });
 
-            OctoPrint.files.upload("local", file, { filename: _selectedFilePath + fName });
+            OctoPrint.files.upload("local", file, { filename: fName, path: _selectedFilePath });
 
             $('#gcode_edit_dialog').modal('hide');
         });
@@ -79,7 +79,7 @@ $(function() {
 
             var file = new Blob([gtext], { type: "text/plain" });
 
-            OctoPrint.files.upload("local", file, { filename: _selectedFilePath + fName });
+            OctoPrint.files.upload("local", file, { filename: fName, path: _selectedFilePath });
 
             $('#gcode_edit_dialog').modal('hide');
         });
