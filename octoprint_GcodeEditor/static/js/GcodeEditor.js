@@ -73,17 +73,6 @@ $(function() {
             $('#gcode_edit_dialog').modal('hide');
         });
 
-        self.saveGcode = ko.pureComputed(function() {
-            var fName = self._sanitize(self.destinationFilename());
-            var gtext = self.gcodeTextArea();
-
-            var file = new Blob([gtext], { type: "text/plain" });
-
-            OctoPrint.files.upload("local", file, { filename: fName, path: _selectedFilePath });
-
-            $('#gcode_edit_dialog').modal('hide');
-        });
-
         self.canSaveGcode = ko.pureComputed(function() {
             return !(self.printerState.isPrinting() && self.printerState.filename() === self.destinationFilename());
         });
