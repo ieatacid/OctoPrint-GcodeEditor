@@ -124,7 +124,7 @@ $(function() {
 
                 self.title(header);
 
-                self.destinationFilename(name.split('.')[0] + '_modified.gcode');
+                self.destinationFilename(name);
 
                 self.gcodeHeight(0.0);
 
