@@ -239,7 +239,7 @@ $(function() {
                         setTimeout(function() {
 
                             var furl = button.parent().children('a.btn-mini').attr('href');
-                            var fname = button.parent().parent().children('div.title').text();
+                            var fname = decodeURIComponent(furl.split('/').pop().split('?')[0]);
                             var fheader = _.sprintf(gettext("Editing %(fileName)s"),
                                 {
                                     fileName: htmlEncode(typeof self.files.currentPath === "undefined" ||
